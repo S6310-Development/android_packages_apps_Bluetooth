@@ -32,8 +32,8 @@ public class BluetoothMapMessageListingElement
     implements Comparable<BluetoothMapMessageListingElement> {
 
     private static final String TAG = "BluetoothMapMessageListingElement";
-    private static final boolean D = true;
-    private static final boolean V = true;
+    private static final boolean D = false;
+    private static final boolean V = false;
 
     private long cpHandle = 0; /* The content provider handle - without type information */
     private String mapHandle = null; /* The map hex-string handle with type information */
@@ -95,10 +95,6 @@ public class BluetoothMapMessageListingElement
 
     public String getSenderAddressing() {
         return senderAddressing;
-    }
-
-    public void setEmailSenderAddressing(String senderAddressing) {
-       this.senderAddressing = senderAddressing;
     }
 
     public void setSenderAddressing(String senderAddressing) {
@@ -222,44 +218,43 @@ public class BluetoothMapMessageListingElement
      * */
     public void encode(XmlSerializer xmlMsgElement) throws IllegalArgumentException, IllegalStateException, IOException
     {
-            Log.d(TAG, "Inside encode");
+
             // contruct the XML tag for a single msg in the msglisting
-            xmlMsgElement.startTag(null, "msg");
-            xmlMsgElement.attribute(null, "handle", mapHandle);
+            xmlMsgElement.startTag("", "msg");
+            xmlMsgElement.attribute("", "handle", mapHandle);
             if(subject != null)
-                xmlMsgElement.attribute(null, "subject", subject);
+                xmlMsgElement.attribute("", "subject", subject);
             if(dateTime != 0)
-                xmlMsgElement.attribute(null, "datetime", this.getDateTimeString());
+                xmlMsgElement.attribute("", "datetime", this.getDateTimeString());
             if(senderName != null)
-                xmlMsgElement.attribute(null, "sender_name", senderName);
+                xmlMsgElement.attribute("", "sender_name", senderName);
             if(senderAddressing != null)
-                xmlMsgElement.attribute(null, "sender_addressing", senderAddressing);
+                xmlMsgElement.attribute("", "sender_addressing", senderAddressing);
             if(replytoAddressing != null)
-                xmlMsgElement.attribute(null, "replyto_addressing",replytoAddressing);
+                xmlMsgElement.attribute("", "replyto_addressing",replytoAddressing);
             if(recipientName != null)
-                xmlMsgElement.attribute(null, "recipient_name",recipientName);
+                xmlMsgElement.attribute("", "recipient_name",recipientName);
             if(recipientAddressing != null)
-                xmlMsgElement.attribute(null, "recipient_addressing", recipientAddressing);
+                xmlMsgElement.attribute("", "recipient_addressing", recipientAddressing);
             if(type != null)
-                xmlMsgElement.attribute(null, "type", type.name());
+                xmlMsgElement.attribute("", "type", type.name());
             if(size != -1)
-                xmlMsgElement.attribute(null, "size", Integer.toString(size));
+                xmlMsgElement.attribute("", "size", Integer.toString(size));
             if(text != null)
-                xmlMsgElement.attribute(null, "text", text);
+                xmlMsgElement.attribute("", "text", text);
             if(receptionStatus != null)
-                xmlMsgElement.attribute(null, "reception_status", receptionStatus);
+                xmlMsgElement.attribute("", "reception_status", receptionStatus);
             if(attachmentSize != -1)
-                xmlMsgElement.attribute(null, "attachment_size", Integer.toString(attachmentSize));
+                xmlMsgElement.attribute("", "attachment_size", Integer.toString(attachmentSize));
             if(priority != null)
-                xmlMsgElement.attribute(null, "priority", priority);
+                xmlMsgElement.attribute("", "priority", priority);
             if(read != null && reportRead)
-                xmlMsgElement.attribute(null, "read", read);
+                xmlMsgElement.attribute("", "read", read);
             if(sent != null)
-                xmlMsgElement.attribute(null, "sent", sent);
+                xmlMsgElement.attribute("", "sent", sent);
             if(protect != null)
-                xmlMsgElement.attribute(null, "protect", protect);
-            xmlMsgElement.endTag(null, "msg");
-            Log.d(TAG, "Exiting encode");
+                xmlMsgElement.attribute("", "protect", protect);
+            xmlMsgElement.endTag("", "msg");
 
     }
 }

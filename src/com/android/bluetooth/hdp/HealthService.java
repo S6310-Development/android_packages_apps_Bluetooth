@@ -100,28 +100,25 @@ public class HealthService extends ProfileService {
     }
 
     protected boolean stop() {
-        if(mHandler != null) {
-            mHandler.removeCallbacksAndMessages(null);
-            Looper looper = mHandler.getLooper();
-            if (looper != null) {
-                looper.quit();
-            }
+        mHandler.removeCallbacksAndMessages(null);
+        Looper looper = mHandler.getLooper();
+        if (looper != null) {
+            looper.quit();
         }
         cleanupApps();
         return true;
     }
 
     private void cleanupApps(){
-        if (mApps != null) {
-            Iterator <Map.Entry<BluetoothHealthAppConfiguration,AppInfo>>it
-                        = mApps.entrySet().iterator();
-            while (it.hasNext()) {
-               Map.Entry<BluetoothHealthAppConfiguration,AppInfo> entry   = it.next();
-               AppInfo appInfo = entry.getValue();
-               if (appInfo != null)
-                   appInfo.cleanup();
-               it.remove();
-            }
+        Iterator <Map.Entry<BluetoothHealthAppConfiguration,AppInfo>>it
+                    = mApps.entrySet().iterator();
+        while (it.hasNext())
+        {
+           Map.Entry<BluetoothHealthAppConfiguration,AppInfo> entry   = it.next();
+           AppInfo appInfo = entry.getValue();
+           if (appInfo != null)
+               appInfo.cleanup();
+           it.remove();
         }
     }
     protected boolean cleanup() {

@@ -46,12 +46,6 @@ class HeadsetPhoneState {
     // Number of held (background) calls
     private int mNumHeld = 0;
 
-    // Phone Number
-    private String mNumber;
-
-    // Type of Phone Number
-    private int mType = 0;
-
     // HFP 1.6 CIND signal
     private int mSignal = 0;
 
@@ -122,23 +116,6 @@ class HeadsetPhoneState {
         mNumHeld = numHeldCall;
     }
 
-    void setNumber(String mNumberCall ) {
-        mNumber = mNumberCall;
-    }
-
-    String getNumber()
-    {
-        return mNumber;
-    }
-
-    void setType(int mTypeCall) {
-        mType = mTypeCall;
-    }
-
-    int getType() {
-        return mType;
-    }
-
     int getSignal() {
         return mSignal;
     }
@@ -148,10 +125,7 @@ class HeadsetPhoneState {
     }
 
     void setRoam(int roam) {
-        if (mRoam != roam) {
-            mRoam = roam;
-            sendDeviceStateChanged();
-        }
+        mRoam = roam;
     }
 
     void setBatteryCharge(int batteryLevel) {
@@ -187,17 +161,13 @@ class HeadsetPhoneState {
 
     void sendDeviceStateChanged()
     {
-        // When out of service, send signal strength as 0. Some devices don't
-        // use the service indicator, but only the signal indicator
-        int signal = mService == HeadsetHalConstants.NETWORK_STATE_AVAILABLE ? mSignal : 0;
-
         Log.d(TAG, "sendDeviceStateChanged. mService="+ mService +
-                   " mSignal=" + signal +" mRoam="+ mRoam +
+                   " mSignal="+mSignal +" mRoam="+mRoam +
                    " mBatteryCharge=" + mBatteryCharge);
         HeadsetStateMachine sm = mStateMachine;
         if (sm != null) {
             sm.sendMessage(HeadsetStateMachine.DEVICE_STATE_CHANGED,
-                new HeadsetDeviceState(mService, mRoam, signal, mBatteryCharge));
+                new HeadsetDeviceState(mService, mRoam, mSignal, mBatteryCharge));
         }
     }
 

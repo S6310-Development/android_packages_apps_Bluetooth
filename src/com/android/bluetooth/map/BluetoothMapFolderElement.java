@@ -30,7 +30,7 @@ import android.util.Xml;
 public class BluetoothMapFolderElement {
     private String name;
     private BluetoothMapFolderElement parent = null;
-    protected ArrayList<BluetoothMapFolderElement> subFolders;
+    private ArrayList<BluetoothMapFolderElement> subFolders;
 
     public BluetoothMapFolderElement( String name, BluetoothMapFolderElement parrent ){
         this.name = name;
@@ -87,7 +87,7 @@ public class BluetoothMapFolderElement {
      */
     public BluetoothMapFolderElement getSubFolder(String folderName){
         for(BluetoothMapFolderElement subFolder : subFolders){
-            if(subFolder.getName().equalsIgnoreCase(folderName))
+            if(subFolder.getName().equals(folderName))
                 return subFolder;
         }
         return null;

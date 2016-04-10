@@ -16,7 +16,6 @@
 
 package com.android.bluetooth.hfp;
 
-import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothProfile;
@@ -64,8 +63,6 @@ public class HeadsetService extends ProfileService {
         IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         filter.addAction(AudioManager.VOLUME_CHANGED_ACTION);
         filter.addAction(BluetoothDevice.ACTION_CONNECTION_ACCESS_REPLY);
-        filter.addAction(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED);
-        filter.addAction(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED);
         try {
             registerReceiver(mHeadsetReceiver, filter);
         } catch (Exception e) {
@@ -81,9 +78,7 @@ public class HeadsetService extends ProfileService {
         } catch (Exception e) {
             Log.w(TAG,"Unable to unregister headset receiver",e);
         }
-        if (mStateMachine != null) {
-            mStateMachine.doQuit();
-        }
+        mStateMachine.doQuit();
         return true;
     }
 
@@ -115,14 +110,6 @@ public class HeadsetService extends ProfileService {
                     Log.v(TAG, "Received BluetoothDevice.ACTION_CONNECTION_ACCESS_REPLY");
                     mStateMachine.handleAccessPermissionResult(intent);
                 }
-                Log.v(TAG, "HeadsetService -  Received BluetoothDevice.ACTION_CONNECTION_ACCESS_REPLY");
-                mStateMachine.handleAccessPermissionResult(intent);
-            } else if (intent.getAction().equals(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED)) {
-                Log.v(TAG, "HeadsetService -  Received BluetoothA2dp Play State changed");
-                mStateMachine.sendMessage(HeadsetStateMachine.UPDATE_A2DP_PLAY_STATE, intent);
-            } else if (intent.getAction().equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
-               Log.v(TAG, "HeadsetService -  Received BluetoothA2dp Conn State changed");
-               mStateMachine.sendMessage(HeadsetStateMachine.UPDATE_A2DP_CONN_STATE, intent);
             }
         }
     };
@@ -360,6 +347,11 @@ public class HeadsetService extends ProfileService {
 
     public List<BluetoothDevice> getConnectedDevices() {
         enforceCallingOrSelfPermission(BLUETOOTH_PERM, "Need BLUETOOTH permission");
+        if (mStateMachine == null) {
+            Log.w(TAG,"mStateMachine is null");
+            return new ArrayList<BluetoothDevice>(0);
+        }
+
         return mStateMachine.getConnectedDevices();
     }
 
@@ -395,9 +387,8 @@ public class HeadsetService extends ProfileService {
     boolean startVoiceRecognition(BluetoothDevice device) {
         enforceCallingOrSelfPermission(BLUETOOTH_PERM, "Need BLUETOOTH permission");
         int connectionState = mStateMachine.getConnectionState(device);
-        if ((connectionState != BluetoothProfile.STATE_CONNECTED &&
-            connectionState != BluetoothProfile.STATE_CONNECTING)  ||
-            !mStateMachine.isBluetoothVoiceDialingEnabled()) {
+        if (connectionState != BluetoothProfile.STATE_CONNECTED &&
+            connectionState != BluetoothProfile.STATE_CONNECTING) {
             return false;
         }
         mStateMachine.sendMessage(HeadsetStateMachine.VOICE_RECOGNITION_START);

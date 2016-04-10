@@ -1,6 +1,4 @@
 /*
- * Copyright (C) 2013 The Linux Foundation. All rights reserved
- * Not a Contribution.
  * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,25 +20,19 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.SystemProperties;
 import android.util.Log;
 
 import com.android.bluetooth.R;
 import com.android.bluetooth.a2dp.A2dpService;
 import com.android.bluetooth.hdp.HealthService;
 import com.android.bluetooth.hfp.HeadsetService;
-import com.android.bluetooth.hfpclient.HandsfreeClientService;
 import com.android.bluetooth.hid.HidService;
-import com.android.bluetooth.hid.HidDevService;
 import com.android.bluetooth.pan.PanService;
 import com.android.bluetooth.gatt.GattService;
 import com.android.bluetooth.map.BluetoothMapService;
 
 public class Config {
     private static final String TAG = "AdapterServiceConfig";
-    private static final int hfpClientNotSupported  = -1;
-    private static final int hfpClientSupported  = 1;
-    private static int enableHfpclient = 0;
     /**
      * List of profile services.
      */
@@ -54,9 +46,7 @@ public class Config {
         HealthService.class,
         PanService.class,
         GattService.class,
-        BluetoothMapService.class,
-        HandsfreeClientService.class,
-        HidDevService.class
+        BluetoothMapService.class
     };
     /**
      * Resource flag to indicate whether profile is supported or not.
@@ -68,9 +58,7 @@ public class Config {
         R.bool.profile_supported_hdp,
         R.bool.profile_supported_pan,
         R.bool.profile_supported_gatt,
-        R.bool.profile_supported_map,
-        R.bool.profile_supported_hfpclient,
-        R.bool.profile_supported_hidd
+        R.bool.profile_supported_map
     };
 
     private static Class[] SUPPORTED_PROFILES = new Class[0];
@@ -88,14 +76,6 @@ public class Config {
             boolean supported = resources.getBoolean(PROFILE_SERVICES_FLAG[i]);
             if (supported) {
                 Log.d(TAG, "Adding " + PROFILE_SERVICES[i].getSimpleName());
-                if (PROFILE_SERVICES[i].getSimpleName().equals("HandsfreeClientService")) {
-                    enableHfpclient = SystemProperties.getInt("bluetooth.hfp.client",
-                            hfpClientNotSupported);
-                    Log.d(TAG, "enableHfpclient " +enableHfpclient);
-                    if (enableHfpclient == hfpClientSupported)
-                        profiles.add(PROFILE_SERVICES[i]);
-                    continue;
-                }
                 profiles.add(PROFILE_SERVICES[i]);
             }
         }

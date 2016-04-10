@@ -371,12 +371,6 @@ public class BluetoothOppTransferActivity extends AlertActivity implements
                             .cancel(mTransInfo.mID);
 
                     // retry the failed transfer
-                    Uri uri = BluetoothOppUtility.originalUri(Uri.parse(mTransInfo.mFileUri));
-                    BluetoothOppSendFileInfo sendFileInfo =
-                        BluetoothOppSendFileInfo.generateFileInfo(this, uri, mTransInfo.mFileType);
-                    uri = BluetoothOppUtility.generateUri(uri, sendFileInfo);
-                    BluetoothOppUtility.putSendFileInfo(uri, sendFileInfo);
-                    mTransInfo.mFileUri = uri.toString();
                     BluetoothOppUtility.retryTransfer(this, mTransInfo);
 
                     BluetoothDevice remoteDevice = mAdapter.getRemoteDevice(mTransInfo.mDestAddr);
@@ -429,20 +423,17 @@ public class BluetoothOppTransferActivity extends AlertActivity implements
             return;
         }
 
-        // Set Transfer Max as 100. Percentage calculation would be done in setProgress API
-        mProgressTransfer.setMax(100);
-
-        if (mTransInfo.mTotalBytes != 0) {
-            if (V) Log.v(TAG, "mCurrentBytes: " + mTransInfo.mCurrentBytes +
-                " mTotalBytes: " + mTransInfo.mTotalBytes + " (" +
-                (int)((mTransInfo.mCurrentBytes * 100) / mTransInfo.mTotalBytes) + "%)");
-            mProgressTransfer.setProgress((int)((mTransInfo.mCurrentBytes * 100) /
-                mTransInfo.mTotalBytes));
+        if (mTransInfo.mTotalBytes == 0) {
+            // if Max and progress both equal 0, the progress display 100%.
+            // Below is to fix it.
+            mProgressTransfer.setMax(100);
         } else {
-            mProgressTransfer.setProgress(100);
+            mProgressTransfer.setMax(mTransInfo.mTotalBytes);
         }
 
-        mPercentView.setText(BluetoothOppUtility.formatProgressText(this, mTransInfo.mTotalBytes,
+        mProgressTransfer.setProgress(mTransInfo.mCurrentBytes);
+
+        mPercentView.setText(BluetoothOppUtility.formatProgressText(mTransInfo.mTotalBytes,
                 mTransInfo.mCurrentBytes));
 
         // Handle the case when DIALOG_RECEIVE_ONGOING evolve to

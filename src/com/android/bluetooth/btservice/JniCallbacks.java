@@ -1,6 +1,4 @@
 /*
- * Copyright (C) 2013 The Linux Foundation. All rights reserved
- * Not a Contribution.
  * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,8 +57,8 @@ final class JniCallbacks {
         mRemoteDevices.deviceFoundCallback(address);
     }
 
-    void pinRequestCallback(byte[] address, byte[] name, int cod, boolean secure) {
-        mRemoteDevices.pinRequestCallback(address, name, cod, secure);
+    void pinRequestCallback(byte[] address, byte[] name, int cod) {
+        mRemoteDevices.pinRequestCallback(address, name, cod);
     }
 
     void bondStateChangeCallback(int status, byte[] address, int newState) {
@@ -68,11 +66,9 @@ final class JniCallbacks {
     }
 
     void aclStateChangeCallback(int status, byte[] address, int newState) {
-        mRemoteDevices.aclStateChangeCallback(status, address, newState);
+		mRemoteDevices.aclStateChangeCallback(status, address, newState);
     }
-    void wakeStateChangeCallback(int state) {
-        mRemoteDevices.wakeStateChangeCallback(state);
-    }
+
     void stateChangeCallback(int status) {
         mAdapterStateMachine.stateChangeCallback(status);
     }
@@ -85,8 +81,4 @@ final class JniCallbacks {
         mAdapterProperties.adapterPropertyChangedCallback(types, val);
     }
 
-    void deviceMasInstancesFoundCallback(int status, byte[] address, String[] name, int[] scn,
-            int[] id, int[] msgtype) {
-        mRemoteDevices.deviceMasInstancesFoundCallback(status, address, name, scn, id, msgtype);
-    }
 }
